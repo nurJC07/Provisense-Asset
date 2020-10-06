@@ -2,17 +2,7 @@ import React, {useState, useEffect} from 'react';
 import dayjs from 'dayjs';
 import 'dayjs/locale/id';
 import { useSelector, useDispatch } from 'react-redux'
-import {
-  CHeader,
-  CToggler,
-  CHeaderBrand,
-  CHeaderNav,
-  CHeaderNavItem,
-  CHeaderNavLink,
-  CSubheader,
-  CBreadcrumbRouter,
-  CLink
-} from '@coreui/react'
+import {CHeader, CToggler, CHeaderBrand, CHeaderNav, CHeaderNavItem, CSubheader, CBreadcrumbRouter} from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 
 // routes config
@@ -22,8 +12,6 @@ import {
   TheHeaderDropdown,
   TheHeaderDropdownNotif,
 }  from './index'
-
-
 
 const TheHeader = () => {
   const dispatch = useDispatch()
@@ -70,10 +58,8 @@ const TheHeader = () => {
      
 
       <CHeaderNav className="px-3 ml-auto">
-    
         <CHeaderNavItem className="px-3">
-        
-      <i><font color="blue"> <marquee behavior="scroll" direction="left"><strong><span > {dayjs(date).locale('id').format("[Today], DD-MMMM-YYYY HH:mm:ss")} </span></strong> </marquee> </font></i>
+        <i><font color="blue"> {dayjs(date).locale('id').format("[Today], DD-MMMM-YYYY HH:mm:ss")} </font></i>
         </CHeaderNavItem>
         <TheHeaderDropdownNotif/>
        

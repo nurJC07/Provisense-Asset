@@ -1,15 +1,15 @@
 import React from 'react'
-import {CWidgetDropdown,CRow,CCol} from '@coreui/react'
+import {CWidgetDropdown,CRow, CCol } from '@coreui/react'
 
 
-const WidgetsDropdown = ({dataInBound,dataOutBound, dataTotal}) => {
+const WidgetScanner = ({scannerID,location, dataTotal}) => {
   return (
     <CRow>
       <CCol sm="6" lg="4">
         <CWidgetDropdown
           color="gradient-primary"
-          header="Total items Inbound today"
-          text={Object.keys(dataInBound).length}
+          header="ID Scanner"
+          text={scannerID}
           style={{fontSize:"50px"}}
         >
         </CWidgetDropdown>
@@ -18,8 +18,8 @@ const WidgetsDropdown = ({dataInBound,dataOutBound, dataTotal}) => {
       <CCol sm="6" lg="4">
       <CWidgetDropdown
           color="gradient-warning"
-          header="Total items Outbound today"
-          text={Object.keys(dataOutBound).length}
+          header="Location"
+          text={location}
           style={{fontSize:"50px"}}
         >
       </CWidgetDropdown>
@@ -28,15 +28,16 @@ const WidgetsDropdown = ({dataInBound,dataOutBound, dataTotal}) => {
       <CCol sm="6" lg="4">
       <CWidgetDropdown
           color="gradient-danger"
-          header="Total Stock items today"
+          header="Total Items"
           fontHeader ="50px"
           style={{fontSize:"50px"}}
           text={Object.keys(dataTotal).length}
+          
         >
         </CWidgetDropdown>
-      </CCol>     
+      </CCol>
     </CRow>
   )
 }
 
-export default WidgetsDropdown;
+export default WidgetScanner;

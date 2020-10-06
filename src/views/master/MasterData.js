@@ -1,94 +1,243 @@
-import React, { lazy, useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
-  CBadge,
   CButton,
-  CButtonGroup,
-  CCard,
   CCardBody,
-  CCardFooter,
-  CCardHeader,
   CCol,
-  CProgress,
+  CLabel,
+  CInput,
   CRow,
   CForm,
   CFormGroup,
-  CFormText,
-  CCallout,
   CTabContent,
   CTabPane,
   CTabs,
   CNav,
-  CNavItem,
-  CNavLink
+  CNavLink,
+  CCard,
+  CModal,
+  CModalHeader,
+  CModalBody
 } from '@coreui/react';
-import { Card, CardBody, Col, Row, CardHeader, Jumbotron } from 'reactstrap';
 import CIcon from '@coreui/icons-react';
 import ItemList from '../../Database/itemList';
+import ScannerList from '../../Database/scannerList';
 import { BootstrapTable, TableHeaderColumn } from "react-bootstrap-table";
 import 'react-bootstrap-table/dist/react-bootstrap-table-all.min.css';
-import dayjs from 'dayjs';
-import 'dayjs/locale/id';
 import { freeSet } from '@coreui/icons'
 import Select from 'react-select'
+import AlertModal from "../modal/AlertModal";
+import InfoModal from "../modal/InfoModal";
+import LocationOption from '../../Database/locationList';
 
 
-const WidgetsDropdown = lazy(() => import('../widgets/WidgetsDropdown.js'))
-
-const options = [
-  { value: 'Gudang A', label: 'Gudang A' },
-  { value: 'Gudang B', label: 'Gudang B' },
-  { value: 'Gudang C', label: 'Gudang C' }
+const position = [
+  { value: 'Pintu Masuk', label: 'Pintu Masuk' },
+  { value: 'Pintu Keluar', label: 'Pintu Keluar' },
 ]
 
-const Dashboard = () => {
-    const [active, setActive] = useState(1)
+const MasterData = () => {
+    const [selectedLocation, setSelectedLocation] = useState();
+    const [selectedPosition, setSelectedPosition] = useState();
+    const [addModalOpen, setaddModalOpen] = useState(false);
+    const [addEditModalOpen, setaddEditModalOpen] = useState(false);
+    const initialInfo = {isOpen: false, text: ""};
+    const [infoModalData, setInfoModalData] = useState(initialInfo);
 
-  // set value for default selection
-  const [selectedValue, setSelectedValue] = useState("Gudang A");
-  const [inBound, setInBound] = useState();
-  const [outBound, setOutBound] = useState();
-  const [total, setTotalBound] = useState()
  
+  const toggleOpenAdd = ()=>{
+    setaddEditModalOpen(true);
+    setaddModalOpen(true);
+    
+  }
+  const toggleClose = ()=>{
+    setaddEditModalOpen(false);
+    setaddModalOpen(false);
+    // setisEditing(false);
+    // clearUserState();
+  }
+
+  const alertInfo=(text)=>{
+    setInfoModalData({
+      isOpen:true, text
+    })
+  }
 
   useEffect(() => {
-    var inBoundList = ItemList.filter(item => item.area === selectedValue && item.status === 'INBOUND')
-    var outBoundList = ItemList.filter(item => item.area === selectedValue && item.status === 'OUTBOUND')
-    var TotalList = ItemList.filter(item => item.area === selectedValue)
-    setInBound(inBoundList)
-    setOutBound(outBoundList)
-    setTotalBound(TotalList)
-    // setSelectedValue(selectedValue)
+
+   
   }, 
-  [selectedValue] )
+  [] )
   
- 
+  const viewAddEditRFID = ()=>{
+    return(
+      <CForm >
+       <CRow>
+        <CCol xs="12">
+          <CFormGroup>
+            <CLabel htmlFor="name">RFID ID</CLabel>
+            <CRow>
+            <CCol xs="9">
+            <CInput id="name" placeholder="Enter your name" required />
+            </CCol>
+            <CCol xs="3">
+            <CButton 
+            type="submit"
+            style={{padding:"6px 20px"}}
+            size="sm" 
+            color="success" 
+          >
+           <CIcon content={freeSet.cilQrCode}  />
+            &nbsp; Scan
+          </CButton>
+            </CCol>
+            </CRow>
+            
+          </CFormGroup>
+        </CCol>
+      </CRow>
+        <CRow>
+          <CCol xs="12">
+            <CFormGroup>
+              <CLabel htmlFor="name">ID ITEM</CLabel>
+              <CInput id="name" placeholder="Enter your name" required />
+            </CFormGroup>
+          </CCol>
+        </CRow>
+        <CRow>
+        <CCol xs="12">
+          <CFormGroup>
+            <CLabel htmlFor="name">TYPE</CLabel>
+            <CInput id="name" placeholder="Enter your name" required />
+          </CFormGroup>
+        </CCol>
+      </CRow>
+      <CRow>
+        <CCol xs="12">
+          <CFormGroup>
+            <CLabel htmlFor="name">NAME</CLabel>
+            <CInput id="name" placeholder="Enter your name" required />
+          </CFormGroup>
+        </CCol>
+      </CRow>
+        <div style={{textAlign:"right"}}>
+        <CButton 
+            size="sm" 
+            onClick={toggleClose} 
+            // color="warning" 
+            style={{padding:"6px 50px"}}
+          >
+            <i className="fa fa-window-close"></i> 
+            Cancel
+          </CButton>
+          <CButton 
+            // type="submit"
+            // className="d-flex ml-auto"  
+            size="sm" 
+            // color="#1C54B2" 
+            style={{padding:"6px 50px", background:"#1C54B2", fontWeight:"bold", fontSize:"14px",lineHeight:"19px",
+            textAlign:"center",   color: "#FFFFFF"}}
+          >
+            <i className="fa fa-dot-circle-o"></i> 
+            Save
+          </CButton>{'  '}
+         
+        </div>
+
+      </CForm>
+    )
+  }
   // handle onChange event of the dropdown
-  const handleChange = e => {
-    setSelectedValue(e.value);
+  const viewAddEditScanner = ()=>{
+    return(
+      <CForm >
+        <CRow>
+          <CCol xs="12">
+            <CFormGroup>
+              <CLabel htmlFor="name">SCANNER ID</CLabel>
+              <CInput id="name" placeholder="Enter Scanner ID" required />
+            </CFormGroup>
+          </CCol>
+        </CRow>
+      <CRow>
+        <CCol xs="12">
+          <CFormGroup>
+            <CLabel htmlFor="name">LOCATION</CLabel>
+            <Select
+              isSearchable
+              value={LocationOption.find(obj => obj.value === selectedLocation)} // set selected value
+              options={LocationOption} // set list of the data
+              onChange={(e) => setSelectedLocation(e.value)} // assign onChange function
+            />
+          </CFormGroup>
+        </CCol>
+      </CRow>
+      <CRow>
+        <CCol xs="12">
+          <CFormGroup>
+            <CLabel htmlFor="name">POSITION</CLabel>
+            <Select
+              isClearable
+              isSearchable
+              defaultValue={position[0]}
+              value={position.find(obj => obj.value === selectedPosition)} // set selected value
+              options={position} // set list of the data
+              onChange={(e) => setSelectedPosition(e.value)} // assign onChange function
+            />
+          </CFormGroup>
+        </CCol>
+      </CRow>
+        <div style={{textAlign:"right"}}>
+        <CButton 
+            size="sm" 
+            onClick={toggleClose} 
+            // color="warning" 
+            style={{padding:"6px 50px"}}
+          >
+            <i className="fa fa-window-close"></i> 
+            Cancel
+          </CButton>
+          <CButton 
+            // type="submit"
+            // className="d-flex ml-auto"  
+            size="sm" 
+            // color="#1C54B2" 
+            style={{padding:"6px 50px", background:"#1C54B2", fontWeight:"bold", fontSize:"14px",lineHeight:"19px",
+            textAlign:"center",   color: "#FFFFFF"}}
+          >
+            <i className="fa fa-dot-circle-o"></i> 
+            Save
+          </CButton>{'  '}
+         
+        </div>
+
+      </CForm>
+    )
   }
-  const itemList = ()=>{
-    const 	statusFormatter = (cell, row) => {
-      if(row.status === "INBOUND") {
-          return (
-            <div style={{color:"green"}}><CIcon content={freeSet.cilArrowBottom} /> {row.status}<span></span></div>
-          )
-      } else if (row.status === "OUTBOUND") {
-          return (
-            <div style={{color:"red"}}><CIcon content={freeSet.cilArrowTop}  /> {row.status}<span></span></div>
-          )
-      }
-  }
-//   const handleInsertButtonClick = (onClick) => {
-//     // Custom your onClick event here,
-//     // it's not necessary to implement this function if you have no any process before onClick
-//     console.log('This is my custom function for InserButton click event');
-//     onClick();
-//   }
-  const customBtnGroup = () => {
+const itemList = ()=>{
+  const customBtnGroup = (props)=>{
     return (
-      <button style={ { color: 'red' } } >Scanner</button>
-    );
+      <div>
+        <CButton className="mr-2" onClick={() => toggleOpenAdd()} color="primary">
+          <i className="fa fa-plus"></i>+ Attach New RFID
+        </CButton>
+      </div>
+  )
   }
+
+  const actionFormatter = (props)=>{
+    return (
+      <div className="row ">
+        <CButton className="mr-3" onClick={() => toggleOpenAdd()}>
+        <CIcon content={freeSet.cilPencil} className='text-success' />
+        </CButton>
+        <CButton onClick={() => toggleOpenAdd()} >
+        <CIcon content={freeSet.cilTrash} className='text-danger' />
+        </CButton>
+      </div>
+    )
+  }
+
+
     var options = {
       sizePerPageList: [
         {text: 'lihat 5', value: 5},
@@ -104,52 +253,141 @@ const Dashboard = () => {
     }
   
     return(
-      <BootstrapTable data={total} 
+      <div>
+      <BootstrapTable data={ItemList} 
       striped hover pagination search edit options={options} 
-      exportCSV version='4' 
+      exportCSV version='4' headerStyle={{textAlign:"Left"}} dataAlign="left"
       searchPlaceholder={"Pencarian...."}   >
         <TableHeaderColumn 
            thStyle={ { whiteSpace: 'normal', width: '10%'} } 
            tdStyle={ { whiteSpace: 'normal', width:"10%" } } 
           isKey
-          dataField="id"
+          dataField="rfid"
+          
         >
          RFID ID
         </TableHeaderColumn>
-        <TableHeaderColumn
-         thStyle={ { whiteSpace: 'normal', width: '10%'} } 
-         tdStyle={ { whiteSpace: 'normal', width:"10%" } } 
-          dataField="time"
-          dataAlign="center"
+        <TableHeaderColumn 
+           thStyle={ { whiteSpace: 'normal', width: '10%'} } 
+           tdStyle={ { whiteSpace: 'normal', width:"10%" } } 
+          dataField="id"
+          
         >
-          Time
-        </TableHeaderColumn>
-        <TableHeaderColumn
-          thStyle={ { whiteSpace: 'normal', width: '15%'} } 
-          tdStyle={ { whiteSpace: 'normal', width:"15%" } } 
-          dataField="status"
-          dataAlign="center"
-          dataFormat={statusFormatter}
-        >
-          Status
+         ID ITEM
         </TableHeaderColumn>
         <TableHeaderColumn
           thStyle={ { whiteSpace: 'normal', width: '25%'} } 
           tdStyle={ { whiteSpace: 'normal', width:"25%" } } 
           dataField="type"
-          dataAlign="center"
+         
         >
-          Type
+          TYPE
         </TableHeaderColumn>
         <TableHeaderColumn
            thStyle={ { whiteSpace: 'normal', width: '35%'} } 
            tdStyle={ { whiteSpace: 'normal', width:"35%" } } 
           dataField="name"
-          dataAlign="center"
+         
         >
-          Item Name
+          NAME
+        </TableHeaderColumn>
+        <TableHeaderColumn
+           thStyle={ { whiteSpace: 'normal', width: '35%'} } 
+           tdStyle={ { whiteSpace: 'normal', width:"35%" } } 
+           dataFormat={actionFormatter}
+         
+        >
+          ACTION
         </TableHeaderColumn>
       </BootstrapTable>
+     
+     <CModal show={addEditModalOpen}  backdrop="static" >
+          <CModalHeader>Attach New RFID</CModalHeader>
+          <CModalBody>{viewAddEditRFID()}</CModalBody>
+        </CModal>
+
+
+     <InfoModal
+         isOpen={infoModalData.isOpen}
+         title="Berhasil"
+         btnConfirmOnClick={()=>setInfoModalData(initialInfo)}
+       >
+         {infoModalData.text}
+     </InfoModal>
+     </div>
+    )
+  }
+const scannerList = ()=>{
+  const customBtn = (props)=>{
+    return (
+      <div>
+        <CButton className="mr-2" onClick={() => toggleOpenAdd()} color="primary">
+          <i className="fa fa-plus"></i>+ Add New Scanner
+        </CButton>
+      </div>
+    )
+  }
+
+  // handle onChange event of the dropdown
+ 
+const actionFormatter = (props)=>{
+  return (
+    <div className="row ">
+      <CButton className="mr-3" onClick={() => toggleOpenAdd()}>
+      <CIcon content={freeSet.cilPencil} className='text-success' />
+      </CButton>
+      <CButton onClick={() => toggleOpenAdd()} >
+      <CIcon content={freeSet.cilTrash} className='text-danger' />
+      </CButton>
+    </div>
+  )
+}
+
+var options = {
+      sizePerPageList: [
+        {text: 'lihat 5', value: 5},
+        {text: 'lihat 10', value: 10},
+        {text: 'lihat 15', value: 15}
+      ],
+      sizePerPage: 10,
+      sortName: 'id',
+      searchPosition: 'left',
+      btnGroup: customBtn,
+      noDataText: 'No data(s) found. Please try again by using another keyword.'
+    }
+  
+    return(
+      <div>
+      <BootstrapTable data={ScannerList} striped hover pagination search edit options={options} exportCSV version='4' dataAlign="left" searchPlaceholder={"Pencarian...."}   >
+        <TableHeaderColumn  isKey thStyle={{whiteSpace: 'normal', width: '10%'}} tdStyle={{whiteSpace: 'normal', width:"10%"}} dataField="id"> SCANNER ID
+        </TableHeaderColumn>
+        <TableHeaderColumn thStyle={ { whiteSpace: 'normal', width: '10%'} } tdStyle={ { whiteSpace: 'normal', width:"10%" } }  dataField="location">LOCATION 
+        </TableHeaderColumn>
+        <TableHeaderColumn
+          thStyle={ { whiteSpace: 'normal', width: '25%'} } 
+          tdStyle={ { whiteSpace: 'normal', width:"25%" } } 
+          dataField="position"> POSITION
+        </TableHeaderColumn>
+        <TableHeaderColumn
+           thStyle={ { whiteSpace: 'normal', width: '35%'} } 
+           tdStyle={ { whiteSpace: 'normal', width:"35%" } } 
+           dataFormat={actionFormatter} >  ACTION
+        </TableHeaderColumn>
+      </BootstrapTable>
+      <CModal show={addEditModalOpen}  backdrop="static" >
+          <CModalHeader>Attach New RFID</CModalHeader>
+          <CModalBody>{viewAddEditScanner()}</CModalBody>
+        </CModal>
+
+
+     <InfoModal
+         isOpen={infoModalData.isOpen}
+         title="Berhasil"
+         btnConfirmOnClick={()=>setInfoModalData(initialInfo)}
+       >
+         {infoModalData.text}
+     </InfoModal>
+     </div>
     )
   }
   
@@ -164,30 +402,27 @@ const Dashboard = () => {
       <CNav variant="pills" className="flex-sm-row mb-2" style={{backgroundColor:"#fff"}}>
         <CNavLink className="flex-sm-fill text-sm-center" style={{borderRradius: "8px 0px 0px 8pxx"}} data-tab="home">RFID</CNavLink>
         <CNavLink className="flex-sm-fill text-sm-center" style={{borderRradius: "8px"}} data-tab="profile">SCANNER</CNavLink>
-       </CNav>
-
+      </CNav>
       <CTabContent>
-        <CTabPane data-tab="home">
-        <Card>
-        <CardBody>
+      <CTabPane data-tab="home">
+        <CCard>
+        <CCardBody>
         {itemList()}
-        </CardBody>
-      </Card>
-    
+        </CCardBody>
+        </CCard>
         </CTabPane>
         <CTabPane data-tab="profile">
-        <Card>
-        <CardBody>
-        {itemList()}
-        </CardBody>
-      </Card>
-    
-        </CTabPane>
+        <CCard>
+        <CCardBody>
+        {scannerList()}
+        </CCardBody>
+        </CCard>
+      </CTabPane>
       </CTabContent>
     </CTabs>
-     
+   
     </div>
   )
 }
 
-export default Dashboard
+export default MasterData;
