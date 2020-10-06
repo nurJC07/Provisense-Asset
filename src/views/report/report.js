@@ -11,13 +11,14 @@ import {
   CFormGroup,
 } from '@coreui/react'
 import ItemList from '../../Database/itemList';
-import LocationList from '../../Database/locationList';
+import LocationOption from '../../Database/locationList';
 import { BootstrapTable, TableHeaderColumn } from "react-bootstrap-table";
 import 'react-bootstrap-table/dist/react-bootstrap-table-all.min.css';
 import dayjs from 'dayjs';
 import 'dayjs/locale/id';
 import Select from 'react-select';
 import $ from 'jquery';
+import {daterangepicker} from 'daterangepicker'
 
 
 const position = [
@@ -73,11 +74,10 @@ const generateReport = () => {
           <CFormGroup>
             <CLabel htmlFor="name">LOCATION</CLabel>
             <Select
-              isClearable
               isSearchable
-              placeholder={LocationList[0]}
-              value={LocationList.find(obj => obj.value === selectedLocation)} // set selected value
-              options={LocationList} // set list of the data
+              defaultValue={LocationOption[0]}
+              value={LocationOption.find(obj => obj.value === selectedLocation)} // set selected value
+              options={LocationOption} // set list of the data
               onChange={(e) => setSelectedLocation(e.value)} // assign onChange function
             />
           </CFormGroup>
